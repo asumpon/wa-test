@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+
+<head>
+  <style>
+    #watson-chat-container {
+      width: 90vw;
+      height: 90vh;
+      position: fixed;
+      right: 5%; 
+      bottom: 5%; 
+      z-index: 1000; 
+    }
+
+    .HideWebChat {
+        display:inherit !important;
+    }
+  </style>
+</head>
+<body>
+
+<div id="watson-chat-container" class="watson-chat-container"></div>
+
+<script>
+    const elements = document.querySelector('#watson-chat-container');
+  window.watsonAssistantChatOptions = {
+    integrationID: "d91b9bcc-115f-4163-8a5d-13ae90a951b7", // The ID of this integration.
+    region: "us-south", // The region your integration is hosted in.
+    serviceInstanceID: "369ae095-7e81-4bdf-add0-7db9f110c6a9", // The ID of your service instance.
+    element: elements,
+    onLoad: async (instance) => {
+    await instance.render();
+    // Add the class to hide the chat window initially
+    instance.on({ type: 'view:change', handler: (event) => viewChangeHandler(event, instance) });
+    instance.elements.getMainWindow().addClassName('HideWebChat');
+  }
+};
+
+function viewChangeHandler(event, instance) {
+  if (event.newViewState.mainWindow) {
+    instance.elements.getMainWindow().removeClassName('HideWebChat');
+  } else {
+    instance.elements.getMainWindow().addClassName('HideWebChat');
+  }
+}
+
+setTimeout(function() {
+  const script = document.createElement('script');
+  script.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+  document.head.appendChild(script);
+});
+</script>
